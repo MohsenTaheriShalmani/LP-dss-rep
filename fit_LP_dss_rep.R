@@ -1,24 +1,24 @@
-fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
-                                                            plotting=TRUE,
-                                                            numberOfCoverPoints3D=1000000,
-                                                            k_Ring3D=10, # for dividing 2D and 3D object
-                                                            lambda3D=0.5, # for dividing 2D and 3D object
-                                                            k_Ring2D=5, # for dividing 2D and 3D object
-                                                            lambda2D=2.5, # for dividing 2D and 3D object
-                                                            sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
-                                                            circleResolution=24, # resolution of the 2D urchin
-                                                            circleResolutionHigh=150, # resolution of the 2D urchin
-                                                            urchinRadius=0.5, # resolution of the 2D urchin
-                                                            thresholdDistance2D=0.2,
-                                                            polyDegree3D=4,
-                                                            polyDegree2D=4,
-                                                            alpha1=2, # for alpha convex hull
-                                                            numberOfPoints4alphaHull=5000,
-                                                            numberOf2DspokePoints=4,
-                                                            numberOfSpanialPoints=27,
-                                                            numberOfSpokes4Interpolation=5,
-                                                            rotationGap=10, #to fit best medial curve
-                                                            cross_sections_visualization=FALSE) {
+fit_LP_dss_rep<- function(tmesh,
+                          plotting=TRUE,
+                          numberOfCoverPoints3D=100000,
+                          k_Ring3D=10, # for dividing 2D and 3D object
+                          lambda3D=0.5, # for dividing 2D and 3D object
+                          k_Ring2D=5, # for dividing 2D and 3D object
+                          lambda2D=2.5, # for dividing 2D and 3D object
+                          sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
+                          circleResolution=24, # resolution of the 2D urchin
+                          circleResolutionHigh=150, # resolution of the 2D urchin
+                          urchinRadius=0.5, # resolution of the 2D urchin
+                          thresholdDistance2D=0.2,
+                          polyDegree3D=4,
+                          polyDegree2D=4,
+                          alpha1=2, # for alpha convex hull
+                          numberOfPoints4alphaHull=5000,
+                          numberOf2DspokePoints=4,
+                          numberOfSpanialPoints=27,
+                          numberOfSpokes4Interpolation=5,
+                          rotationGap=10, #to fit best medial curve
+                          cross_sections_visualization=FALSE) {
   
   #check mesh integrity
   meshintegrity(tmesh,facecheck = TRUE)
@@ -40,95 +40,95 @@ fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
   }
   
   
-  # numberOfVertices<-dim(tmesh$vb)[2]
-  # geoDistancesMatrix<-array(NA,dim = c(numberOfVertices,numberOfVertices))
-  # for (i in 1:numberOfVertices) {
-  #   geoDistancesMatrix[i,]<-vcgDijkstra(tmesh,i)
-  # }
-  # 
-  # #make geoDistancesMatrix symmetric
-  # geoDistancesMatrix<-forceSymmetric(geoDistancesMatrix)
-  # # geoDistancesMatrix<-upper.tri(geoDistancesMatrix,diag = TRUE)+t(upper.tri(geoDistancesMatrix,diag = FALSE))
-  # 
-  # # mean curvature of the vertices
-  # vcgInfo<-vcgCurve(tmesh)
-  # meanCurvatureOfAllVertices<-vcgInfo$meanvb
-  # 
-  # #adjancy matrix of neighbors
-  # allAdjacentVertices<-vcgVertexNeighbors(tmesh,numstep = k_Ring3D)
-  # 
-  # unitNormals<-t(tmesh$normals[1:3,])/sqrt(rowSums(t(tmesh$normals[1:3,])^2))
-  # 
-  # normalMultiplicationMatrix<-unitNormals%*%t(unitNormals)
-  # 
-  # elementWiseMultipleMatrix<-exp(lambda3D*normalMultiplicationMatrix*geoDistancesMatrix)
-  # 
-  # #compute affinity matrix W
-  # W<-elementWiseMultipleMatrix
-  # numberOfPoints<-dim(W)[2]
-  # tempVec<-1:numberOfPoints
-  # pb <- txtProgressBar(style = 3)
-  # for (i in 1:numberOfPoints) {
-  #   setTxtProgressBar(pb,i/numberOfPoints)
-  #   notNeighbor<-tempVec[!tempVec %in% allAdjacentVertices[[i]]]
-  #   W[i,notNeighbor]<-0
-  # }
-  # close(pb)
-  # 
-  # d<-(rowSums(W))^(-1/2)
-  # D<-diag(d)
-  # 
-  # L <- D%*%W%*%D
-  # 
-  # L <- diag(nrow(L))-L
-  # 
-  # eigenValAndVec<-eigen(L)
-  # 
-  # smallestEigenVectorIndex<-nrow(L)-1
-  # secondSmallestEigenValue<-eigenValAndVec$values[smallestEigenVectorIndex]
-  # secondSmallestEigenVector<-eigenValAndVec$vectors[,smallestEigenVectorIndex]
-  # 
-  # upIndices<-which(secondSmallestEigenVector>0)
-  # downIndices<-which(secondSmallestEigenVector<=0)
-  # 
-  # 
-  # #plot
-  # if(plotting==TRUE){
-  #   open3d()
-  #   spheres3d(vert2points(tmesh)[upIndices,],radius = 2,col='orange')
-  #   spheres3d(vert2points(tmesh)[downIndices,],radius = 2,col='blue')
-  # }
-  # 
-  # # we consider the top and bottom parts of the object as two meshes by
-  # # tmesh$it which is the face indices
-  # #Up
-  # tempMatrix<-matrix(t(tmesh$it) %in% upIndices,ncol = 3,byrow = FALSE)
-  # polyIndicesUp<-which(rowSums(tempMatrix)==3)
-  # trglsUp <- as.matrix(t(t(tmesh$it)[polyIndicesUp,]))
-  # tmeshUp <- tmesh3d(tmesh$vb, trglsUp)
-  # #Edge
-  # polyIndicesEdge<-which(rowSums(tempMatrix)==2 | rowSums(tempMatrix)==1)
-  # trglsEdge <- as.matrix(t(t(tmesh$it)[polyIndicesEdge,]))
-  # tmeshEdge <- tmesh3d(tmesh$vb, trglsEdge)
-  # #Down
-  # tempMatrix<-matrix(t(tmesh$it) %in% downIndices,ncol = 3,byrow = FALSE)
-  # polyIndicesDown<-which(rowSums(tempMatrix)==3)
-  # trglsDown <- as.matrix(t(t(tmesh$it)[polyIndicesDown,]))
-  # tmeshDown <- tmesh3d(tmesh$vb, trglsDown)
-  # 
-  # 
-  # #remove unreferenced vertices
-  # tmeshUp<-vcgClean(tmeshUp,sel = 1)
-  # tmeshEdge<-vcgClean(tmeshEdge,sel = 1)
-  # tmeshDown<-vcgClean(tmeshDown,sel = 1)
-  # 
-  # #plot
-  # if(plotting==TRUE){
-  #   open3d()
-  #   shade3d(tmeshUp,col="blue")
-  #   shade3d(tmeshEdge,col="yellow")
-  #   shade3d(tmeshDown,col="red")
-  # }
+  numberOfVertices<-dim(tmesh$vb)[2]
+  geoDistancesMatrix<-array(NA,dim = c(numberOfVertices,numberOfVertices))
+  for (i in 1:numberOfVertices) {
+    geoDistancesMatrix[i,]<-vcgDijkstra(tmesh,i)
+  }
+
+  #make geoDistancesMatrix symmetric
+  geoDistancesMatrix<-forceSymmetric(geoDistancesMatrix)
+  # geoDistancesMatrix<-upper.tri(geoDistancesMatrix,diag = TRUE)+t(upper.tri(geoDistancesMatrix,diag = FALSE))
+
+  # mean curvature of the vertices
+  vcgInfo<-vcgCurve(tmesh)
+  meanCurvatureOfAllVertices<-vcgInfo$meanvb
+
+  #adjancy matrix of neighbors
+  allAdjacentVertices<-vcgVertexNeighbors(tmesh,numstep = k_Ring3D)
+
+  unitNormals<-t(tmesh$normals[1:3,])/sqrt(rowSums(t(tmesh$normals[1:3,])^2))
+
+  normalMultiplicationMatrix<-unitNormals%*%t(unitNormals)
+
+  elementWiseMultipleMatrix<-exp(lambda3D*normalMultiplicationMatrix*geoDistancesMatrix)
+
+  #compute affinity matrix W
+  W<-elementWiseMultipleMatrix
+  numberOfPoints<-dim(W)[2]
+  tempVec<-1:numberOfPoints
+  pb <- txtProgressBar(style = 3)
+  for (i in 1:numberOfPoints) {
+    setTxtProgressBar(pb,i/numberOfPoints)
+    notNeighbor<-tempVec[!tempVec %in% allAdjacentVertices[[i]]]
+    W[i,notNeighbor]<-0
+  }
+  close(pb)
+
+  d<-(rowSums(W))^(-1/2)
+  D<-diag(d)
+
+  L <- D%*%W%*%D
+
+  L <- diag(nrow(L))-L
+
+  eigenValAndVec<-eigen(L)
+
+  smallestEigenVectorIndex<-nrow(L)-1
+  secondSmallestEigenValue<-eigenValAndVec$values[smallestEigenVectorIndex]
+  secondSmallestEigenVector<-eigenValAndVec$vectors[,smallestEigenVectorIndex]
+
+  upIndices<-which(secondSmallestEigenVector>0)
+  downIndices<-which(secondSmallestEigenVector<=0)
+
+
+  #plot
+  if(plotting==TRUE){
+    open3d()
+    spheres3d(vert2points(tmesh)[upIndices,],radius = 2,col='orange')
+    spheres3d(vert2points(tmesh)[downIndices,],radius = 2,col='blue')
+  }
+
+  # we consider the top and bottom parts of the object as two meshes by
+  # tmesh$it which is the face indices
+  #Up
+  tempMatrix<-matrix(t(tmesh$it) %in% upIndices,ncol = 3,byrow = FALSE)
+  polyIndicesUp<-which(rowSums(tempMatrix)==3)
+  trglsUp <- as.matrix(t(t(tmesh$it)[polyIndicesUp,]))
+  tmeshUp <- tmesh3d(tmesh$vb, trglsUp)
+  #Edge
+  polyIndicesEdge<-which(rowSums(tempMatrix)==2 | rowSums(tempMatrix)==1)
+  trglsEdge <- as.matrix(t(t(tmesh$it)[polyIndicesEdge,]))
+  tmeshEdge <- tmesh3d(tmesh$vb, trglsEdge)
+  #Down
+  tempMatrix<-matrix(t(tmesh$it) %in% downIndices,ncol = 3,byrow = FALSE)
+  polyIndicesDown<-which(rowSums(tempMatrix)==3)
+  trglsDown <- as.matrix(t(t(tmesh$it)[polyIndicesDown,]))
+  tmeshDown <- tmesh3d(tmesh$vb, trglsDown)
+
+
+  #remove unreferenced vertices
+  tmeshUp<-vcgClean(tmeshUp,sel = 1)
+  tmeshEdge<-vcgClean(tmeshEdge,sel = 1)
+  tmeshDown<-vcgClean(tmeshDown,sel = 1)
+
+  #plot
+  if(plotting==TRUE){
+    open3d()
+    shade3d(tmeshUp,col="blue")
+    shade3d(tmeshEdge,col="yellow")
+    shade3d(tmeshDown,col="red")
+  }
   
   
   ######################################################################################################
@@ -159,14 +159,14 @@ fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
   #   plot3d(coverpoint,type="p",col = "black",expand = 10,box=FALSE,add = TRUE)
   # }
   
-  # #make the mesh slightly smaller
-  # smallMesh<-tmesh
-  # smallMesh$vb[1:3,]<-smallMesh$vb[1:3,]-0.4*smallMesh$normals[1:3,]
+  #make the mesh slightly smaller
+  smallMesh<-tmesh
+  smallMesh$vb[1:3,]<-smallMesh$vb[1:3,]-0.4*smallMesh$normals[1:3,]
   
-  # #find internal points
-  # insidePoints<-pip3d(Vertices = t(smallMesh$vb[1:3,]),
-  #                     Faces = t(smallMesh$it),
-  #                     Queries = coverpoint)
+  #find internal points
+  insidePoints<-pip3d(Vertices = t(smallMesh$vb[1:3,]),
+                      Faces = t(smallMesh$it),
+                      Queries = coverpoint)
   
   #find internal points
   insidePoints<-pip3d(Vertices = t(tmesh$vb[1:3,]),
@@ -182,93 +182,106 @@ fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
   }
   
   
-  # pb <- txtProgressBar(style = 3)
-  # force<-array(NA,nrow(innerPoints))
-  # shortestLengths<-array(NA,nrow(innerPoints))
-  # # angles<-array(NA,nrow(innerPoints))
-  # for (k in 1:nrow(innerPoints)) {
-  #   setTxtProgressBar(pb,k/nrow(innerPoints))
-  #   
-  #   center<-innerPoints[k,]
-  #   
-  #   tempSphere<-makeSphereMesh(center = center,radius = urchinRadius,subdivision = sphereResolution)
-  #   
-  #   # #plot
-  #   # shade3d(tmesh,col="white",alpha=0.1)
-  #   # shade3d(tempSphere,col="blue")
-  #   
-  #   #find the intercetions of rays with internal normal directions
-  #   intersectionsUp <- vcgRaySearch(tempSphere,mesh = tmeshUp,mindist = TRUE)
-  #   intersectionsDown <- vcgRaySearch(tempSphere,mesh = tmeshDown,mindist = TRUE)
-  #   
-  #   tipOfCuttedSpokesUp<-vert2points(intersectionsUp)[intersectionsUp$quality==1,]
-  #   tipOfCuttedSpokesDown<-vert2points(intersectionsDown)[intersectionsDown$quality==1,]
-  #   
-  #   if(!(is.matrix(tipOfCuttedSpokesUp) & is.matrix(tipOfCuttedSpokesDown))){
-  #     
-  #     force[k]<-10^4
-  #     shortestLengths[k]<-0
-  #     
-  #     next
-  #   }
-  #   
-  #   # #plot
-  #   # if(plotting==TRUE){
-  #   #   open3d()
-  #   #   # spheres3d(vert2points(intersections),col="blue",radius = 0.2) #plot intersections
-  #   #   for (i in 1:dim(tipOfCuttedSpokesUp)[1]) {
-  #   #     plot3d(rbind(center,tipOfCuttedSpokesUp[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
-  #   #   }
-  #   #   for (i in 1:dim(tipOfCuttedSpokesDown)[1]) {
-  #   #     plot3d(rbind(center,tipOfCuttedSpokesDown[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
-  #   #   }
-  #   #   #NB!!! we have the information of normals at intersections intersections$normals !!!!
-  #   #   shade3d(tmesh, col="white",alpha=0.2)  #surface mech
-  #   # }
-  #   
-  #   tipOfCuttedSpokes<-rbind(tipOfCuttedSpokesUp,tipOfCuttedSpokesDown)
-  #   labels<-c(rep(1,nrow(tipOfCuttedSpokesUp)),
-  #             rep(2,nrow(tipOfCuttedSpokesDown)))
-  #   
-  #   vectorsMatrix<-tipOfCuttedSpokes-matrix(rep(center,nrow(tipOfCuttedSpokes)),ncol = 3,byrow = TRUE)
-  #   
-  #   # spokeLengths<-apply(X = vectorsMatrix, MARGIN = 1,FUN = myNorm )
-  #   # spokesUnitDirections<-t(apply(X = vectorsMatrix, MARGIN = 1,FUN = convertVec2unitVec ))
-  #   
-  #   forceTemp<-forceFunctionAngleBased_4MultiObject(vectorsMatrix = vectorsMatrix,
-  #                                                   labels = labels,
-  #                                                   type = 'one')
-  #   
-  #   # forceTemp<-forceFunctionAngleBased(vectorsMatrix = vectorsMatrix)
-  #   
-  #   force[k]<-forceTemp$force
-  #   
-  #   shortestLengths[k]<-forceTemp$shortestLength
-  #   
-  #   # angles[k]<-urchin_AngleOfShortestSpokes(vectorsMatrix = vectorsMatrix)
-  #   
-  #   # angles[k]<-urchin_AngleOfShortestSpokes_4MultiObject(vectorsMatrix = vectorsMatrix,
-  #   #                                           labels = labels,
-  #   #                                           type = 'one')
-  #   
-  #   
-  # }
-  # close(pb)
-  # 
-  # forceVectorsMagnitudes<-force
-  # # forceVectorsMagnitudes<-angles
-  # # plot(1:length(forceVectorsMagnitudes),forceVectorsMagnitudes,type = 'p')
-  # 
-  # roundedForce<-round(forceVectorsMagnitudes,digits = 2)
-  # uniqueRounded<-sort(unique(roundedForce))
+  pb <- txtProgressBar(style = 3)
+  force<-array(NA,nrow(innerPoints))
+  shortestLengths<-array(NA,nrow(innerPoints))
+  # angles<-array(NA,nrow(innerPoints))
+  for (k in 1:nrow(innerPoints)) {
+    setTxtProgressBar(pb,k/nrow(innerPoints))
+
+    center<-innerPoints[k,]
+
+    tempSphere<-makeSphereMesh(center = center,radius = urchinRadius,subdivision = sphereResolution)
+
+    # #plot
+    # shade3d(tmesh,col="white",alpha=0.1)
+    # shade3d(tempSphere,col="blue")
+
+    #find the intercetions of rays with internal normal directions
+    intersectionsUp <- vcgRaySearch(tempSphere,mesh = tmeshUp,mindist = TRUE)
+    intersectionsDown <- vcgRaySearch(tempSphere,mesh = tmeshDown,mindist = TRUE)
+
+    tipOfCuttedSpokesUp<-vert2points(intersectionsUp)[intersectionsUp$quality==1,]
+    tipOfCuttedSpokesDown<-vert2points(intersectionsDown)[intersectionsDown$quality==1,]
+
+    if(!(is.matrix(tipOfCuttedSpokesUp) & is.matrix(tipOfCuttedSpokesDown))){
+
+      force[k]<-10^4
+      shortestLengths[k]<-0
+
+      next
+    }
+
+    # #plot
+    # if(plotting==TRUE){
+    #   open3d()
+    #   # spheres3d(vert2points(intersections),col="blue",radius = 0.2) #plot intersections
+    #   for (i in 1:dim(tipOfCuttedSpokesUp)[1]) {
+    #     plot3d(rbind(center,tipOfCuttedSpokesUp[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
+    #   }
+    #   for (i in 1:dim(tipOfCuttedSpokesDown)[1]) {
+    #     plot3d(rbind(center,tipOfCuttedSpokesDown[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
+    #   }
+    #   #NB!!! we have the information of normals at intersections intersections$normals !!!!
+    #   shade3d(tmesh, col="white",alpha=0.2)  #surface mech
+    # }
+
+    tipOfCuttedSpokes<-rbind(tipOfCuttedSpokesUp,tipOfCuttedSpokesDown)
+    labels<-c(rep(1,nrow(tipOfCuttedSpokesUp)),
+              rep(2,nrow(tipOfCuttedSpokesDown)))
+
+    vectorsMatrix<-tipOfCuttedSpokes-matrix(rep(center,nrow(tipOfCuttedSpokes)),ncol = 3,byrow = TRUE)
+
+    # spokeLengths<-apply(X = vectorsMatrix, MARGIN = 1,FUN = myNorm )
+    # spokesUnitDirections<-t(apply(X = vectorsMatrix, MARGIN = 1,FUN = convertVec2unitVec ))
+
+    forceTemp<-forceFunctionAngleBased_4MultiObject(vectorsMatrix = vectorsMatrix,
+                                                    labels = labels,
+                                                    type = 'one')
+
+    # forceTemp<-forceFunctionAngleBased(vectorsMatrix = vectorsMatrix)
+
+    force[k]<-forceTemp$force
+
+    shortestLengths[k]<-forceTemp$shortestLength
+
+    # angles[k]<-urchin_AngleOfShortestSpokes(vectorsMatrix = vectorsMatrix)
+
+    # angles[k]<-urchin_AngleOfShortestSpokes_4MultiObject(vectorsMatrix = vectorsMatrix,
+    #                                           labels = labels,
+    #                                           type = 'one')
+
+
+  }
+  close(pb)
+
+  forceVectorsMagnitudes<-force
+  # forceVectorsMagnitudes<-angles
+  # plot(1:length(forceVectorsMagnitudes),forceVectorsMagnitudes,type = 'p')
+
+  roundedForce<-round(forceVectorsMagnitudes,digits = 2)
+  uniqueRounded<-sort(unique(roundedForce))
   # table(roundedForce)
   # barplot(uniqueRounded,roundedForce)
-  # distanceThreshold<-2*quantile(shortestLengths,0.1)
+  
+  distanceThreshold<-quantile(shortestLengths,0.1)
+  
   # for (i in length(uniqueRounded):1) {
   #   open3d()
   #   shade3d(tmesh,col="white",alpha=0.1)
   #   plot3d(innerPoints[(roundedForce %in% uniqueRounded[1:i]) &
   #                        shortestLengths>distanceThreshold,],type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
+  # }
+  
+  #conditional medial points
+  selectedMiddlePoint<-innerPoints[(roundedForce %in% uniqueRounded[1:(length(uniqueRounded)-1)]) &
+                                     shortestLengths>distanceThreshold,]
+  
+  # #plot conditional medial points L1
+  # if(plotting==TRUE){
+  #   open3d()
+  #   shade3d(tmesh,col="white",alpha=0.1)
+  #   plot3d(selectedMiddlePoint,type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
   # }
   
   
@@ -285,11 +298,11 @@ fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
   # plot3d(edgePoints,type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
   # shade3d(tmesh,col="white",alpha=0.1)
   
-  # edgePoints<-c()
-  # for (i in 1:dim(t(tmeshEdge$it))[1]) {
-  #   edgePoints<-rbind(edgePoints,
-  #                     colMeans((t(tmeshEdge$vb)[t(tmeshEdge$it)[i,],1:3])))
-  # }
+  edgePoints<-c()
+  for (i in 1:dim(t(tmeshEdge$it))[1]) {
+    edgePoints<-rbind(edgePoints,
+                      colMeans((t(tmeshEdge$vb)[t(tmeshEdge$it)[i,],1:3])))
+  }
   
   # if(plotting==TRUE){
   #   open3d()
@@ -298,10 +311,19 @@ fit_slabular_LP_ds_rep_CrossSectionsNormal2Spine <- function(tmesh,
   #   shade3d(tmesh,col="white",alpha=0.2)
   # }
   
-  # allSelectedPoints<-rbind(selectedMiddlePoint,edgePoints)
+  
+  #plot conditional medial points L1
+  if(plotting==TRUE){
+    open3d()
+    shade3d(tmesh,col="white",alpha=0.1)
+    plot3d(selectedMiddlePoint,type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
+    plot3d(edgePoints,type="p",col = "red",expand = 10,box=FALSE,add = TRUE)
+  }
+  
+  allSelectedPoints<-rbind(selectedMiddlePoint,edgePoints)
   
   # x y z
-  allSelectedPoints<-vert2points(tmesh)
+  # allSelectedPoints<-vert2points(tmesh)
   
   x<-allSelectedPoints[,1]
   y<-allSelectedPoints[,2]
