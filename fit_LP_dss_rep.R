@@ -7,7 +7,6 @@ fit_LP_dss_rep<- function(tmesh,
                           lambda2D=2.5, # for dividing 2D and 3D object
                           sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
                           circleResolution=24, # resolution of the 2D urchin
-                          circleResolutionHigh=150, # resolution of the 2D urchin
                           urchinRadius=0.5, # resolution of the 2D urchin
                           thresholdDistance2D=0.2,
                           polyDegree3D=4,
@@ -16,7 +15,6 @@ fit_LP_dss_rep<- function(tmesh,
                           numberOfPoints4alphaHull=5000,
                           numberOf2DspokePoints=4,
                           numberOfSpanialPoints=27,
-                          numberOfSpokes4Interpolation=5,
                           rotationGap=10, #to fit best medial curve
                           cross_sections_visualization=FALSE) {
   

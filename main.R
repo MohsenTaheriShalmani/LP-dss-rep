@@ -70,14 +70,13 @@ if(TRUE){
 
 fited_LP_ds_rep<-fit_LP_dss_rep(tmesh=tmesh,
                                 plotting=TRUE,
-                                numberOfCoverPoints3D=1000000,
+                                numberOfCoverPoints3D=100000,
                                 k_Ring3D=10, # for dividing 2D and 3D object
                                 lambda3D=0.5, # for dividing 2D and 3D object
                                 k_Ring2D=5, # for dividing 2D and 3D object
                                 lambda2D=2.5, # for dividing 2D and 3D object
                                 sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
                                 circleResolution=24, # resolution of the 2D urchin
-                                circleResolutionHigh=150, # resolution of the 2D urchin
                                 urchinRadius=0.5, # resolution of the 2D urchin
                                 thresholdDistance2D=0.2,
                                 polyDegree3D=4,
@@ -86,7 +85,6 @@ fited_LP_ds_rep<-fit_LP_dss_rep(tmesh=tmesh,
                                 numberOfPoints4alphaHull=5000,
                                 numberOf2DspokePoints=4,
                                 numberOfSpanialPoints=20,
-                                numberOfSpokes4Interpolation=5,
                                 rotationGap=10, #to fit best medial curve
                                 cross_sections_visualization=FALSE)
 
