@@ -54,14 +54,15 @@ meshPoints <- read.csv(file = paste("files/Mesh.csv",sep = ""),check.names = FAL
 PolygonsCsv <- read.csv("files/Mesh_Polygon.csv")
 polyMatrix<-cbind((PolygonsCsv$point1+1),(PolygonsCsv$point2+1),(PolygonsCsv$point3+1))
 
+#convert SPHARM-PDM info to a mesh3d object
 spharmPDM_Mesh<-matrix(meshPoints[[1]], ncol = 3, byrow = TRUE)
+verts <- rbind(t(as.matrix(spharmPDM_Mesh)),1)
+trgls <- as.matrix(t(polyMatrix))
+tmesh <- tmesh3d(verts, trgls)
 
-
+#plot tmesh
 if(TRUE){
   open3d()
-  verts <- rbind(t(as.matrix(spharmPDM_Mesh)),1)
-  trgls <- as.matrix(t(polyMatrix))
-  tmesh <- tmesh3d(verts, trgls)
   wire3d(tmesh, col="grey",alpha=0.2)  #wire mesh
   shade3d(tmesh, col="white",alpha=0.2)  #surface mesh
 }

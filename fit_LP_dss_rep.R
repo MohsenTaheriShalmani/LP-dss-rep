@@ -266,6 +266,7 @@ fit_LP_dss_rep<- function(tmesh,
   
   distanceThreshold<-quantile(shortestLengths,0.1)
   
+  # #plot levels of conditional medial points
   # for (i in length(uniqueRounded):1) {
   #   open3d()
   #   shade3d(tmesh,col="white",alpha=0.1)
@@ -919,19 +920,19 @@ fit_LP_dss_rep<- function(tmesh,
   roundedForce<-round(forceVectorsMagnitudes,digits = 2)
   uniqueRounded<-sort(unique(roundedForce))
   
-  if (plotting==TRUE) {
-    barplot(uniqueRounded,roundedForce) 
-  }
+  # if (plotting==TRUE) {
+  #   barplot(uniqueRounded,roundedForce) 
+  # }
   
-  #plot levels
-  if(plotting==TRUE){
-    for (i in length(uniqueRounded):1) {
-      plot(mesh2D,type = "l",xlim = xlim,ylim = xlim,xlab = "",ylab = "")
-      cumLevel_ith_Points<-innerPoints2D[roundedForce %in% uniqueRounded[1:i],]
-      par(new=TRUE)
-      plot(cumLevel_ith_Points,pch=20,col='blue',xlim = xlim,ylim = xlim,xlab = "",ylab = "")
-    }    
-  }
+  # #plot levels
+  # if(plotting==TRUE){
+  #   for (i in length(uniqueRounded):1) {
+  #     plot(mesh2D,type = "l",xlim = xlim,ylim = xlim,xlab = "",ylab = "")
+  #     cumLevel_ith_Points<-innerPoints2D[roundedForce %in% uniqueRounded[1:i],]
+  #     par(new=TRUE)
+  #     plot(cumLevel_ith_Points,pch=20,col='blue',xlim = xlim,ylim = xlim,xlab = "",ylab = "")
+  #   }    
+  # }
   
   # x y z
   i<-length(uniqueRounded)-2
@@ -1412,10 +1413,10 @@ fit_LP_dss_rep<- function(tmesh,
   #transfer back
   # skeletalPoints_2D<-skeletalPoints_2D%*%t(rotationMatrix2D)+matrix(rep(centroid2D,dim(skeletalPoints_2D)[1]),ncol = 2,byrow = TRUE)
   
-  #plot 2D
-  if(plotting==TRUE){
-    plot(skeletalPoints_2D,type = "l",pch=20,col="blue",xlim = xlim,ylim = xlim,xlab = "",ylab = "") 
-  }
+  # #plot 2D
+  # if(plotting==TRUE){
+  #   plot(skeletalPoints_2D,type = "l",pch=20,col="blue",xlim = xlim,ylim = xlim,xlab = "",ylab = "") 
+  # }
   
   
   newData_2d<-data.frame(x=skeletalPoints_2D[,1], y=skeletalPoints_2D[,2])
