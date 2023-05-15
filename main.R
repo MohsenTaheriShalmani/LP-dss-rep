@@ -30,35 +30,39 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 #####################################################################################################
 #####################################################################################################
-# functions 
+# load functions 
 
-source("subFunctions/MathFunctions.R")
-source("subFunctions/euclideanization.R")
-source("subFunctions/ray_triangle_intersection.R")
-source("subFunctions/cutAndStrechSpokes.R")
-source("subFunctions/forceFunctionAngleBased.R")
-source("subFunctions/frameGenerator.R")
-source("subFunctions/normalsOfSkeletalSheetBySpline.R")
-source("subFunctions/normalsOfSkeletalSheetByConnections.R")
-source("subFunctions/rotateFrameForwardAndBackward.R")
-source("subFunctions/meanFrames.R")
-source("fit_LP_dss_rep.R")
+if(TRUE){
+  source("subFunctions/MathFunctions.R")
+  source("subFunctions/euclideanization.R")
+  source("subFunctions/ray_triangle_intersection.R")
+  source("subFunctions/cutAndStrechSpokes.R")
+  source("subFunctions/forceFunctionAngleBased.R")
+  source("subFunctions/frameGenerator.R")
+  source("subFunctions/normalsOfSkeletalSheetBySpline.R")
+  source("subFunctions/normalsOfSkeletalSheetByConnections.R")
+  source("subFunctions/rotateFrameForwardAndBackward.R")
+  source("subFunctions/meanFrames.R")
+  source("fit_LP_dss_rep.R")
+}
 
 #####################################################################################################
 #####################################################################################################
 # load mesh
 
-meshPoints <- read.csv(file = paste("files/Mesh.csv",sep = ""),check.names = FALSE, header=TRUE, sep=",")
-
-# connections of triangular mesh
-PolygonsCsv <- read.csv("files/Mesh_Polygon.csv")
-polyMatrix<-cbind((PolygonsCsv$point1+1),(PolygonsCsv$point2+1),(PolygonsCsv$point3+1))
-
-#convert SPHARM-PDM info to a mesh3d object
-spharmPDM_Mesh<-matrix(meshPoints[[1]], ncol = 3, byrow = TRUE)
-verts <- rbind(t(as.matrix(spharmPDM_Mesh)),1)
-trgls <- as.matrix(t(polyMatrix))
-tmesh <- tmesh3d(verts, trgls)
+if(TRUE){
+  meshPoints <- read.csv(file = paste("files/Mesh.csv",sep = ""),check.names = FALSE, header=TRUE, sep=",")
+  
+  # connections of triangular mesh
+  PolygonsCsv <- read.csv("files/Mesh_Polygon.csv")
+  polyMatrix<-cbind((PolygonsCsv$point1+1),(PolygonsCsv$point2+1),(PolygonsCsv$point3+1))
+  
+  #convert SPHARM-PDM info to a mesh3d object
+  spharmPDM_Mesh<-matrix(meshPoints[[1]], ncol = 3, byrow = TRUE)
+  verts <- rbind(t(as.matrix(spharmPDM_Mesh)),1)
+  trgls <- as.matrix(t(polyMatrix))
+  tmesh <- tmesh3d(verts, trgls)
+}
 
 #plot tmesh
 if(TRUE){
@@ -68,16 +72,21 @@ if(TRUE){
 }
 
 
+#####################################################################################################
+#####################################################################################################
+# fit LP-dss-rep to a triangular mesh
+
+
 fited_LP_ds_rep<-fit_LP_dss_rep(tmesh=tmesh,
                                 plotting=TRUE,
                                 numberOfCoverPoints3D=100000,
-                                k_Ring3D=10, # for dividing 2D and 3D object
-                                lambda3D=0.5, # for dividing 2D and 3D object
-                                k_Ring2D=5, # for dividing 2D and 3D object
-                                lambda2D=2.5, # for dividing 2D and 3D object
-                                sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
-                                circleResolution=24, # resolution of the 2D urchin
-                                urchinRadius=0.5, # resolution of the 2D urchin
+                                k_Ring3D=10, 
+                                lambda3D=0.5,
+                                k_Ring2D=5, 
+                                lambda2D=2.5, 
+                                sphereResolution=1, 
+                                circleResolution=24, 
+                                urchinRadius=0.5, 
                                 thresholdDistance2D=0.2,
                                 polyDegree3D=4,
                                 polyDegree2D=2,
