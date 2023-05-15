@@ -175,37 +175,11 @@ if(TRUE){
 #####################################################################################################
 #####################################################################################################
 #####################################################################################################
-# generate ds-reps of the ellipsoid and the inflated ellipsoids
+# load ds-rep data of the ellipsoids and the inflated ellipsoids
 
-# skelPlusBoundary_ellipsoid<-rbind(SkeletalPDMEllipsoid[,,1],BoundaryPDMEllipsoid[,,1])
-# 
-# skelPlusBoundary_simulatedEllipsoid<-array(NA,dim = c(dim(skelPlusBoundary_ellipsoid),nSim1))
-# for (i in 1:nSim1) {
-#   skelPlusBoundary_simulatedEllipsoid[,,i]<-tps3d(x = skelPlusBoundary_ellipsoid,
-#                                                   refmat = ellipsoid_SpharmPDM,
-#                                                   tarmat = simulatedEllipsoids_PDM[,,i])
-# }
-# skelPlusBoundary_simulatedInflatedEllipsoid<-array(NA,dim = c(dim(skelPlusBoundary_ellipsoid),nSim2))
-# for (i in 1:nSim2) {
-#   skelPlusBoundary_simulatedInflatedEllipsoid[,,i]<-tps3d(x = skelPlusBoundary_ellipsoid,
-#                                                           refmat = ellipsoid_SpharmPDM,
-#                                                           tarmat = simulatedinflatedEllipsoids_PDM[,,i])
-# }
-
-
-# save(skelPlusBoundary_simulatedEllipsoid,file = "files/skelPlusBoundary_simulatedEllipsoid.Rdata")
-# save(skelPlusBoundary_simulatedInflatedEllipsoid,file = "files/skelPlusBoundary_simulatedInflatedEllipsoid.Rdata")
 
 load("files/skelPlusBoundary_simulatedEllipsoid.Rdata")
 load("files/skelPlusBoundary_simulatedInflatedEllipsoid.Rdata")
-
-
-# for (i in 1:nSim1) {
-#   plot3d(skelPlusBoundary_simulatedEllipsoid[,,i],type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
-# }
-# for (i in 1:nSim2) {
-#   plot3d(skelPlusBoundary_simulatedInflatedEllipsoid[,,i],type="p",col = "red",expand = 10,box=FALSE,add = TRUE)
-# }
 
 
 SkeletalPDMG1<-skelPlusBoundary_simulatedEllipsoid[1:nTotalRadii,,]
@@ -215,8 +189,8 @@ SkeletalPDMG2<-skelPlusBoundary_simulatedInflatedEllipsoid[1:nTotalRadii,,]
 BoundaryPDMG2<-skelPlusBoundary_simulatedInflatedEllipsoid[(nTotalRadii+1):dim(skelPlusBoundary_simulatedEllipsoid)[1],,]
 
 
-nSamplesG1<-nSim1
-nSamplesG2<-nSim2
+nSamplesG1<-dim(skelPlusBoundary_simulatedEllipsoid)[3]
+nSamplesG2<-dim(skelPlusBoundary_simulatedInflatedEllipsoid)[3]
 
 #####################################################################################################
 #####################################################################################################
@@ -254,8 +228,8 @@ for (k in 1:nSamplesG2) {
 #####################################################################################################
 # Plot a ds-rep and its mesh from group1
 
-sampleNo<-10 #choose sampleNo between 1 to nSamplesG1=108 to see other ds-reps
-#plot
+#plot an inflated ellipsoid with its ds-rep
+sampleNo<-10 #choose sampleNo between 1 to nSamplesG2 to see other ds-reps
 if(TRUE){
   open3d()
   srep1<-rbind(SkeletalPDMG2[,,sampleNo],BoundaryPDMG2[,,sampleNo])
@@ -272,50 +246,21 @@ if(TRUE){
              box = F, axes = TRUE, main = NULL, sub = NULL, top = T, aspect = FALSE, expand = 1.1)
 }
 
-#####################################################################################################
-#####################################################################################################
-# Plot to see spoke correspondence
-# We see spokes' tip and tails in separated colors
+# convert ds-reps to LP-ds-reps
 
-# #plot
-# if(TRUE){
-#   open3d()
-#   for (k in 1:nSamplesG1) {
-#     plot3d(SkeletalPDMG1[1:upSpoeksNumber,,k],type="p",col = "yellow",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(BoundaryPDMG1[1:upSpoeksNumber,,k],type="p",col = "orange",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(BoundaryPDMG1[(upSpoeksNumber+1):(upSpoeksNumber+downSpoeksNumber),,k],type="p",col = "green",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(SkeletalPDMG1[(2*upSpoeksNumber+1):nTotalRadii,,k],type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
-#   }
-#   open3d()
-#   for (k in 1:nSamplesG2) {
-#     plot3d(SkeletalPDMG2[1:upSpoeksNumber,,k],type="p",col = "yellow",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(BoundaryPDMG2[1:upSpoeksNumber,,k],type="p",col = "orange",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(BoundaryPDMG2[(upSpoeksNumber+1):(upSpoeksNumber+downSpoeksNumber),,k],type="p",col = "green",expand = 10,box=FALSE,add = TRUE)
-#     plot3d(SkeletalPDMG2[(2*upSpoeksNumber+1):nTotalRadii,,k],type="p",col = "blue",expand = 10,box=FALSE,add = TRUE)
-#   }
-# }
-
-#####################################################################################################
-#####################################################################################################
 # Define labels of the frames for the grid of the skeletal sheet
-
 # NB frame 16 is its own parent
 framesCenters   <-c(16,13,10,7 ,4 ,1 ,2 ,3 ,19,22,25,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,29,30,26,27,23,24,20,21,17,18,14,15,11,12,8 ,9 ,5 ,6 ,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71)
 framesParents   <-c(16,16,13,10,7 ,4 ,1 ,2 ,16,19,22,25,28,31,32,28,34,25,36,22,38,19,40,16,42,13,44,10,46,7 ,48,4 ,50,28,29,25,26,22,23,19,20,16,17,13,14,10,11,7 ,8 ,4 ,5 ,3 ,6 ,9 ,12,15,18,21,24,27,30,33,35,37,39,41,43,45,47,49,51)
 framesBackPoints<-c(13,16,13,10,7 ,4 ,1 ,2 ,16,19,22,25,28,31,32,28,34,25,36,22,38,19,40,16,42,13,44,10,46,7 ,48,4 ,50,28,29,25,26,22,23,19,20,16,17,13,14,10,11,7 ,8 ,4 ,5 ,3 ,6 ,9 ,12,15,18,21,24,27,30,33,35,37,39,41,43,45,47,49,51)
 framesFronts    <-c(19,10,7 ,4 ,1 ,2 ,3 ,52,22,25,28,31,32,33,62,35,63,37,64,39,65,41,66,43,67,45,68,47,69,49,70,51,71,30,61,27,60,24,59,21,58,18,57,15,56,12,55,9 ,54,6 ,53,rep(Inf,20)) #NB! crest frames don't have front point
-
 # number of frames
 numberOfFrames<-length(framesCenters)
 
-#####################################################################################################
-#####################################################################################################
 # Calculate normal vectors of the skeletal sheet
-
 # A general solution to calculate normals could be fitting a spline surface to the skeletal points.
 # But spline fitting needs pre-alignment of skeletals to XY plane. Also it add variation to the normals.
 # Here we generate normals based on the quadrilateral structure of the skeletal sheet.
-
 #choose a method to find normals "sheetTriangles" or "splineFitting"
 method2findNormals<-"sheetTriangles"
 # method2findNormals<-"splineFitting"
@@ -441,11 +386,8 @@ if(TRUE){
   print("Group 2 is done!")
 }
 
-#####################################################################################################
-#####################################################################################################
 # Plot LP-ds-rep
-
-sampleNo<-1 #choose sampleNo between 1 to nSamplesG1=108 to see other ds-reps
+sampleNo<-1 #choose sampleNo between 1 to nSamplesG1 to see other ds-reps
 #plot
 if(TRUE){
   open3d()
@@ -500,10 +442,7 @@ if(TRUE){
   
 }
 
-#####################################################################################################
-#####################################################################################################
 # Combine frames vectors to make SO(3) frames in global coordinate system
-
 if(TRUE){
   frames_G1<-array(NA,dim = c(3,3,numberOfFrames,nSamplesG1))
   for (k in 1:nSamplesG1) {
@@ -523,10 +462,7 @@ if(TRUE){
   }
 }
 
-#####################################################################################################
-#####################################################################################################
 # Calculate children frames coordinates based on their parents frames
-
 if(TRUE){
   framesBasedOnParents_G1<-array(NA,dim = c(3,3,numberOfFrames,nSamplesG1))
   for (k in 1:nSamplesG1) {
@@ -550,10 +486,7 @@ if(TRUE){
   print("Group 2 is done!")
 }
 
-#####################################################################################################
-#####################################################################################################
 # Calculate spokes directions based on their frames
-
 if(TRUE){
   spokesDirectionsBasedOnFrames_G1<-array(NA,dim = c(nTotalRadii,3,nSamplesG1))
   for (k in 1:nSamplesG1) {
@@ -596,10 +529,7 @@ if(TRUE){
   print("Group 2 is done!")
 }
 
-#####################################################################################################
-#####################################################################################################
 # Calculate connection lengths and directions based on their frames
-
 if(TRUE){
   
   connections_G1<-array(NA,dim = c(numberOfFrames,3,nSamplesG1))
@@ -648,11 +578,7 @@ if(TRUE){
   print("Group 2 is done!")
 }
 
-
-#####################################################################################################
-#####################################################################################################
 # calculate LP sizes
-
 #NB! length of the center frame is 0 and must be excluded
 LP_sizes_G1<-rep(NA,nSamplesG1)
 for (i in 1:nSamplesG1) {
@@ -665,7 +591,7 @@ for (i in 1:nSamplesG2) {
 
 #####################################################################################################
 #####################################################################################################
-#Removing or preserving the scale by LP-size
+#Removing or preserving the scale by LP-size based on the type of study
 
 if(typeOfStudy=="sizeAndShapeAnalysis"){
   
@@ -702,7 +628,7 @@ if(typeOfStudy=="sizeAndShapeAnalysis"){
 
 #####################################################################################################
 #####################################################################################################
-# Calculate mean LP-ds-rep
+# Calculate mean LP-ds-rep based on Taheri & schulz 2022 article
 
 #calculate mean frames in local and global coordinate systems
 if(TRUE){
@@ -963,10 +889,8 @@ if(TRUE){
   }
   print("Done!")
 }
-#####################################################################################################
-#####################################################################################################
-# Plot overlaid LP-ds-rep means of PD and CG
 
+# Plot overlaid LP-ds-rep means 
 if(TRUE){
   open3d()
   srep1<-rbind(meanSpokesTails_G1,meanSpokesTips_G1)*mean(sizes_G1) #we scale back to the original size by *mean(sizes_G1)
@@ -996,11 +920,13 @@ cat("sd LP size G1:",sd(LP_sizes_G1),"sd LP size G2:",sd(LP_sizes_G2),"\n")
 cat("Mean LP size G1:",mean(LP_sizes_G1),"mean LP size G2:",mean(LP_sizes_G2),"\n")
 
 
-# hipothesis thresholds
-thresholdDirections<-pi/200
-thresholdDirections
-thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
-thresholdLengths
+# hypothesis thresholds to ignore extremely concentrated data
+if(TRUE){
+  thresholdDirections<-pi/200
+  thresholdDirections
+  thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
+  thresholdLengths  
+}
 
 
 # hypothesis test on spokes' lengths
@@ -1155,10 +1081,7 @@ for(i in 1:numberOfFrames){
 # which(pValFramesBasedOnParent<=0.05)
 
 
-#####################################################################################################
-#####################################################################################################
 # plot significant GOPs
-
 pvalues_LP_ds_rep <- c(pValues_TtestRadii,                 
                        pValues_TtestConnectionsLengths,    
                        pValspokesDirectionsBasedOnFrames,  
@@ -1267,8 +1190,8 @@ if(TRUE){
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
   # pp <- par3d(no.readonly=TRUE)
   # dput(pp, file="plotView.R", control = "all")
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -1282,8 +1205,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' lengths after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #2 plot
   open3d()
@@ -1302,8 +1225,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' lengths",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -1321,8 +1244,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' lengths after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #3 plot
   srep1<-rbind(meanSpokesTails_G1,meanSpokesTips_G1)*mean(sizes_G1)
@@ -1337,8 +1260,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' directions",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -1352,8 +1275,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' directions after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #4 plot
   open3d()
@@ -1372,8 +1295,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' directions",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -1391,8 +1314,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' directions after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #5 plot
   open3d()
@@ -1411,8 +1334,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant frames",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -1430,8 +1353,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant frames after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
 }
 
@@ -1446,221 +1369,17 @@ if(TRUE){
 #####################################################################################################
 #####################################################################################################
 
-allMeshes_G1<-vector(mode = "list", length = nSim1)
-remesh3D<-FALSE
-for (i in 1:nSim1) {
-  verts <- rbind(t(as.matrix(simulatedEllipsoids_PDM[,,i])),1)
-  trgls <- as.matrix(t(polyMatrix))
-  tmesh <- tmesh3d(verts, trgls)
-  #update normals
-  tmesh <- vcgUpdateNormals(tmesh)
-  wire3d(tmesh, col="white",alpha=1)  #surface mesh
-  if(remesh3D==TRUE){
-    #remeshing to increase the number of triangles by reducing the voxelSize
-    remeshedMesh<-vcgUniformRemesh(tmesh,voxelSize = 0.9)
-    print(dim(tmesh$vb))
-    print(dim(remeshedMesh$vb))
-    tmesh<-vcgUpdateNormals(remeshedMesh)
-  }
-  
-  allMeshes_G1[[i]]<-tmesh
-  
-}
 
-open3d()
+# load dss-reps of the ellipsoids and inflated ellipsoids 
 
-allMeshes_G2<-vector(mode = "list", length = nSim2)
-remesh3D<-FALSE
-for (i in 1:nSim2) {
-  
-  verts <- rbind(t(as.matrix(simulatedinflatedEllipsoids_PDM[,,i])),1)
-  trgls <- as.matrix(t(polyMatrix))
-  tmesh <- tmesh3d(verts, trgls)
-  #update normals
-  tmesh <- vcgUpdateNormals(tmesh)
-  wire3d(tmesh, col="white",alpha=1)  #surface mesh
-  if(remesh3D==TRUE){  
-    #remeshing to increase the number of triangles by reducing the voxelSize
-    remeshedMesh<-vcgUniformRemesh(tmesh,voxelSize = 0.9)
-    print(dim(tmesh$vb))
-    print(dim(remeshedMesh$vb))
-    tmesh<-vcgUpdateNormals(remeshedMesh)
-  }
-  
-  allMeshes_G2[[i]]<-tmesh
-  
-}
+load("files/LP_dss_rep_inflationSimulation_G1.Rdata")
+load("files/LP_dss_rep_inflationSimulation_G2.Rdata")
 
+# convert dss-reps to LP-dss-reps
 
-source("fit_slabular_LP_ds_rep_4InflatedEllipsoid.R")
-
-
-# LP_ds_rep_inflationSimulation_G1<-list()
-for (i in 1:nSim1) {
-  
-  LP_ds_rep_inflationSimulation_G1[[i]] <-
-    fit_slabular_LP_ds_rep_4inflatedEllipsoid(
-      tmesh = allMeshes_G1[[i]],
-      plotting=FALSE,
-      numberOfCoverPoints3D=10000,
-      k_Ring3D=10, # for dividing 2D and 3D object
-      lambda3D=0.5, # for dividing 2D and 3D object
-      k_Ring2D=5, # for dividing 2D and 3D object
-      lambda2D=2.5, # for dividing 2D and 3D object
-      sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
-      circleResolution=24, # resolution of the 2D urchin
-      circleResolutionHigh=100, # resolution of the 2D urchin
-      urchinRadius=0.5, # resolution of the 2D urchin
-      thresholdDistance2D=0.2,
-      polyDegree3D=4,
-      polyDegree2D=1,
-      alpha1=40, # for alpha convex hull
-      numberOfPoints4alphaHull=2000,
-      numberOf2DspokePoints=4,
-      numberOfSpanialPoints=27,
-      numberOfSpokes4Interpolation=5,
-      rotationGap=10, #to fit best medial curve
-      cross_sections_visualization=FALSE,
-      shortCut="yes",
-      poly_ols="ols") #ols stands for cubic spline
-  
-  cat(i,"out of",nSim1,"is done.\n")
-  
-  # save(LP_ds_rep_inflationSimulation_G1,file = "../files/LP_ds_rep_inflationSimulation_G1.Rdata")
-  
-}
-
-# LP_ds_rep_inflationSimulation_G2<-list()
-for (i in 1:nSim2) {
-  
-  LP_ds_rep_inflationSimulation_G2[[i]] <-
-    fit_slabular_LP_ds_rep_4inflatedEllipsoid(
-      tmesh = allMeshes_G2[[i]],
-      plotting=TRUE,
-      numberOfCoverPoints3D=100000,
-      k_Ring3D=10, # for dividing 2D and 3D object
-      lambda3D=0.5, # for dividing 2D and 3D object
-      k_Ring2D=5, # for dividing 2D and 3D object
-      lambda2D=2.5, # for dividing 2D and 3D object
-      sphereResolution=1, # choose 1,2,or 3 for the resolution of the urchin
-      circleResolution=24, # resolution of the 2D urchin
-      circleResolutionHigh=100, # resolution of the 2D urchin
-      urchinRadius=0.5, # resolution of the 2D urchin
-      thresholdDistance2D=0.2,
-      polyDegree3D=7,
-      polyDegree2D=1,
-      alpha1=40, # for alpha convex hull
-      numberOfPoints4alphaHull=2000,
-      numberOf2DspokePoints=4,
-      numberOfSpanialPoints=27,
-      numberOfSpokes4Interpolation=5,
-      rotationGap=10, #to fit best medial curve
-      cross_sections_visualization=FALSE,
-      shortCut="yes",
-      poly_ols="ols") #ols stands for cubic spline
-  
-  cat(i,"out of",nSim2,"is done.\n")
-  
-  # save(LP_ds_rep_inflationSimulation_G2,file = "../files/LP_ds_rep_inflationSimulation_G2.Rdata")
-  
-}
-
-
-load("../files/LP_ds_rep_inflationSimulation_G1.Rdata")
-load("../files/LP_ds_rep_inflationSimulation_G2.Rdata")
-
-#plot
-for (sampleNo in 1:5) {
-  
-  # group<-"G1"
-  group<-"G2"
-  
-  if(group=="G1"){
-    tmesh<-allMeshes_G1[[sampleNo]]
-    medialPoints3D<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$medialPoints3D
-    tipOfCuttedUpSpokes<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$tipOfCuttedUpSpokes
-    tipOfCuttedDownSpokes<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$tipOfCuttedDownSpokes
-    pointsIndices<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$pointsIndices
-    parentsIndices<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$parentsIndices
-    framesCenters<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$framesCenters
-    framesFirstVectors<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$framesFirstVectors
-    framesSecondVectors<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$framesSecondVectors
-    framesThirdVectors<-LP_ds_rep_inflationSimulation_G1[[sampleNo]]$framesThirdVectors
-  }else{
-    tmesh<-allMeshes_G2[[sampleNo]]
-    medialPoints3D<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$medialPoints3D
-    tipOfCuttedUpSpokes<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$tipOfCuttedUpSpokes
-    tipOfCuttedDownSpokes<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$tipOfCuttedDownSpokes
-    pointsIndices<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$pointsIndices
-    parentsIndices<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$parentsIndices
-    framesCenters<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$framesCenters
-    framesFirstVectors<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$framesFirstVectors
-    framesSecondVectors<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$framesSecondVectors
-    framesThirdVectors<-LP_ds_rep_inflationSimulation_G2[[sampleNo]]$framesThirdVectors
-  }
-  
-  
-  frameIndices<-which(!is.na(framesCenters))
-  
-  open3d()
-  #plot mesh
-  shade3d(tmesh, col="white",alpha=0.2)
-  # wire3d(tmesh, col="black",alpha=1)  #wire mesh
-  #plot skel points
-  # plot3d(medialPoints3D,type="s",radius = 0.1,col = "blue",expand = 10,box=FALSE,add = TRUE)
-  #connections
-  for (i in 1:nrow(medialPoints3D)) {
-    k1<-pointsIndices[i]
-    k2<-parentsIndices[i]
-    if(k2==k1){
-      next
-    }
-    # vectors3d(medialPoints3D[k1,],
-    #           origin = medialPoints3D[k2,],
-    #           # labels = c("",k1),
-    #           headlength = 0.2,radius = 1/6, col="blue", lwd=2)
-    
-    plot3d(rbind(medialPoints3D[k2,],medialPoints3D[k1,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
-    
-    
-  }
-  decorate3d(xlab = "x", ylab = "y", zlab = "z",
-             box = F, axes = TRUE,
-             sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  
-  #spokes
-  for (i in frameIndices) {
-    plot3d(rbind(medialPoints3D[i,],tipOfCuttedUpSpokes[i,]),type="l",col = "grey",lwd=2,expand = 10,box=FALSE,add = TRUE)
-  }
-  for (i in frameIndices) {
-    plot3d(rbind(medialPoints3D[i,],tipOfCuttedDownSpokes[i,]),type="l",col = "grey",lwd=2,expand = 10,box=FALSE,add = TRUE)
-  }
-  # frames
-  # vectors3d(medialPoints3D[frameIndices,]+framesFirstVectors[frameIndices,],origin = medialPoints3D[frameIndices,],headlength = 0.1,radius = 1/10, col="orange", lwd=2)
-  # vectors3d(medialPoints3D[frameIndices,]+framesSecondVectors[frameIndices,],origin = medialPoints3D[frameIndices,],headlength = 0.1,radius = 1/10, col="orange", lwd=2)
-  # vectors3d(medialPoints3D[frameIndices,]+framesThirdVectors[frameIndices,],origin = medialPoints3D[frameIndices,],headlength = 0.1,radius = 1/10, col="orange", lwd=2)
-  
-}
-
-
-#####################################################################################################
-#####################################################################################################
-# load data and specify type of analysis
-
-load("../files/LP_ds_rep_inflationSimulation_G1.Rdata")
-load("../files/LP_ds_rep_inflationSimulation_G2.Rdata")
-
-nSamplesG1<-length(LP_ds_rep_inflationSimulation_G1)
-nSamplesG1
-nSamplesG2<-length(LP_ds_rep_inflationSimulation_G2)
-nSamplesG2
-
-
-#####################################################################################################
-#####################################################################################################
 # directions based on frames
-
-
+nSamplesG1<-length(LP_ds_rep_inflationSimulation_G1)
+nSamplesG2<-length(LP_ds_rep_inflationSimulation_G2)
 framesCenters<-LP_ds_rep_inflationSimulation_G1[[1]]$framesCenters
 parentsIndices<-LP_ds_rep_inflationSimulation_G1[[1]]$parentsIndices
 parentsIndices<-LP_ds_rep_inflationSimulation_G1[[1]]$parentsIndices
@@ -1680,21 +1399,6 @@ medialPoints3D_G2<-array(NA,dim = c(numberOfSkelPoints,3,nSamplesG2))
 for (i in 1:nSamplesG2) {
   medialPoints3D_G2[,,i]<-LP_ds_rep_inflationSimulation_G2[[i]]$medialPoints3D
 }
-
-# #######################
-# #######################
-# # check correspondence
-# proc1<-procGPA(abind(medialPoints3D_G1,medialPoints3D_G2),scale = TRUE)
-# 
-# for (i in 1:nSamplesG1) {
-#   plot3d(proc1$rotated[,,i],type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in (nSamplesG1+1):(nSamplesG1+nSamplesG2)) {
-#   plot3d(proc1$rotated[,,i],type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-# }
-#######################
-#######################
-
 
 #frames
 framesFirstVectors_G1<-array(NA,dim = c(numberOfSkelPoints,3,nSamplesG1))
@@ -1752,21 +1456,6 @@ for (k in 1:nSamplesG2) {
                                                            vectors2rotate = frames_G2[,,k1,k])
   } 
 }
-
-# plot
-# open3d()
-# spheres3d(x = 0, y = 0, z = 0, radius = 1,col = "lightblue", alpha=0.1)
-# for (i in frameIndices) {
-#   plot3d(t(framesBasedOnParents_G1[1,,i,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-#   plot3d(t(framesBasedOnParents_G1[2,,i,]),type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-#   plot3d(t(framesBasedOnParents_G1[3,,i,]),type="p",col = "green",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in frameIndices) {
-#   plot3d(t(framesBasedOnParents_G2[1,,i,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-#   plot3d(t(framesBasedOnParents_G2[2,,i,]),type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-#   plot3d(t(framesBasedOnParents_G2[3,,i,]),type="p",col = "green",expand = 10,box=TRUE,add = TRUE)
-# }
-
 
 # spokes
 tipOfCuttedUpSpokes_G1<-array(NA,dim = c(numberOfSkelPoints,3,nSamplesG1))
@@ -1876,17 +1565,6 @@ for (k in 1:nSamplesG2) {
   }
 }
 
-# #plot
-# open3d()
-# spheres3d(x = 0, y = 0, z = 0, radius = 1,col = "lightblue", alpha=0.1)
-# plot3d(t(upSpokesDirectionsBasedOnFrames_G1[1,,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# for (i in frameIndices) {
-#   plot3d(t(upSpokesDirectionsBasedOnFrames_G1[i,,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in frameIndices) {
-#   plot3d(t(downSpokesDirectionsBasedOnFrames_G1[i,,]),type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-# }
-
 # connections
 connections_G1<-array(NA,dim = c(numberOfSkelPoints,3,nSamplesG1))
 connectionsLengths_G1<-array(NA,dim=c(numberOfSkelPoints,nSamplesG1))
@@ -1948,28 +1626,8 @@ for (k in 1:nSamplesG2) {
   }
 }
 
-# open3d()
-# spheres3d(x = 0, y = 0, z = 0, radius = 1,col = "lightblue", alpha=0.1)
-# plot3d(t(connectionsBasedOnParentFrames_G1[20,,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# for (i in 1:numberOfSkelPoints) {
-#   plot3d(t(connectionsBasedOnParentFrames_G1[i,,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in 1:numberOfSkelPoints) {
-#   plot3d(t(connectionsBasedOnParentFrames_G2[i,,]),type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in 1:numberOfSkelPoints) {
-#   plot3d(t(connections_G1[i,,]),type="p",col = "blue",expand = 10,box=TRUE,add = TRUE)
-# }
-# for (i in 1:numberOfSkelPoints) {
-#   plot3d(t(connections_G2[i,,]),type="p",col = "red",expand = 10,box=TRUE,add = TRUE)
-# }
 
-
-
-#####################################################################################################
-#####################################################################################################
 # calculate LP sizes
-
 skeletal_CentroidIndex<-which(pointsIndices==parentsIndices)
 
 #NB! length of the center frame is 0 and must be excluded
@@ -1986,29 +1644,8 @@ for (i in 1:nSamplesG2) {
                              log(downSpokeLength_G2[frameIndices,i]))))
 }
 
-# #Volume comparision
-# volumeMesh_G1<-rep(0,nSamplesG1)
-# for (i in 1:nSamplesG1) {
-#   volumeMesh_G1[i]<-vcgVolume(allMeshes_G1[[i]])
-# }
-# volumeMesh_G2<-rep(0,nSamplesG2)
-# for (i in 1:nSamplesG2) {
-#   volumeMesh_G2[i]<-vcgVolume(allMeshes_G2[[i]])
-# }
 
-# # hypothesis test on mesh volume
-# pValues_meshVolume<-meanDifferenceTest1D(log(volumeMesh_G1),log(volumeMesh_G2),type = typeOfTest) 
-# cat("pValue of LP sizes is:",pValues_meshVolume,"\n")
-# boxplot(volumeMesh_G1, volumeMesh_G2, names = c("G1","G2"),main="Volume")
-# cat("Mean volume G1:",mean(LP_sizes_G1),"mean volume G2:",mean(LP_sizes_G2),"\n")
-# cat("sd volume G1:",sd(LP_sizes_G1),"sd volume G2:",sd(LP_sizes_G2),"\n")
-
-
-
-#####################################################################################################
-#####################################################################################################
-#Removing or preserving the scale by LP-size
-
+#Removing or preserving the scale by LP-size based on the type of study
 
 if(typeOfStudy=="sizeAndShapeAnalysis"){
   sizes_G1<-rep(1,nSamplesG1)
@@ -2052,10 +1689,7 @@ if(typeOfStudy=="sizeAndShapeAnalysis"){
 }
 
 
-#####################################################################################################
-#####################################################################################################
-# Calculate mean LP-ds-rep
-
+# Calculate mean LP-dss-rep for visualization
 framesBasedOnParentsVectorized_G1<-array(NA,dim = c(numberOfSkelPoints,9,nSamplesG1))
 for (i in 1:nSamplesG1) {
   for (k in frameIndices) {
@@ -2262,9 +1896,7 @@ for (i in 1:numberOfSkelPoints) {
                                        vectorsInMainAxes = meanConnectionsBasedOnParentFrames_G2[k1,])
 }
 
-#####################################################################################################
-#####################################################################################################
-# Convert mean LP-ds-rep to a GP-ds-rep
+# Convert mean LP-dss-rep to a GP-dss-rep for visualization
 
 meanPositions_G1<-array(NA,dim = c(numberOfSkelPoints,3))
 meanPositions_G1[skeletal_CentroidIndex,]<-c(0,0,0)
@@ -2339,10 +1971,7 @@ for (i in frameIndices) {
     meanDownSpokesDirectionsGlobalCoordinate_G2[i,]*meanDownSpokeLength_G2[i]
 }
 
-#####################################################################################################
-#####################################################################################################
 # Plot overlaid LP-ds-rep means of PD and CG
-
 #spine
 numberOf2DspokePoints<-4
 gorupIndicesOfVeins<-list()
@@ -2360,70 +1989,71 @@ for (i in 1:length(gorupIndicesOfVeins)) {
 }
 spineIndices<-c(numberOfSkelPoints-1,spineIndices,numberOfSkelPoints)
 
-# plot mean LP-ds-rep G1
-open3d()
-#connections
-for (j in 1:nrow(meanPositions_G1)) {
-  k1<-pointsIndices[j]
-  k2<-parentsIndices[j]
-  if(k2==k1){
-    next
+# plot mean LP-dss-rep ellipsoids vs mean LP-dss-rep inflated ellipsoids
+if(TRUE){
+  open3d()
+  #connections
+  for (j in 1:nrow(meanPositions_G1)) {
+    k1<-pointsIndices[j]
+    k2<-parentsIndices[j]
+    if(k2==k1){
+      next
+    }
+    vectors3d(meanPositions_G1[k1,],origin = meanPositions_G1[k2,],
+              headlength = 0.2,radius = 1/10, col="blue", lwd=1)
   }
-  vectors3d(meanPositions_G1[k1,],origin = meanPositions_G1[k2,],
-            headlength = 0.2,radius = 1/10, col="blue", lwd=1)
-}
-#spokes
-for (i in frameIndices) {
-  plot3d(rbind(meanPositions_G1[i,],meanUpSpokesTips_G1[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
-}
-for (i in frameIndices) {
-  plot3d(rbind(meanPositions_G1[i,],meanDownSpokesTips_G1[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
-}
-#spine
-plot3d(meanPositions_G1[spineIndices,],type="l",lwd=4,col = "blue",expand = 10,box=FALSE,add = TRUE)
-# # frames
-# for (i in frameIndices) {
-#   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[1,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-#   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[2,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-#   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[3,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-# }
-
-# plot mean LP-ds-rep G2
-#connections
-for (j in 1:nrow(meanPositions_G2)) {
-  k1<-pointsIndices[j]
-  k2<-parentsIndices[j]
-  if(k2==k1){
-    next
+  #spokes
+  for (i in frameIndices) {
+    plot3d(rbind(meanPositions_G1[i,],meanUpSpokesTips_G1[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
   }
-  vectors3d(meanPositions_G2[k1,],origin = meanPositions_G2[k2,],
-            headlength = 0.2,radius = 1/10, col="red", lwd=1)
+  for (i in frameIndices) {
+    plot3d(rbind(meanPositions_G1[i,],meanDownSpokesTips_G1[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
+  }
+  #spine
+  plot3d(meanPositions_G1[spineIndices,],type="l",lwd=4,col = "blue",expand = 10,box=FALSE,add = TRUE)
+  # # frames
+  # for (i in frameIndices) {
+  #   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[1,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  #   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[2,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  #   vectors3d(meanPositions_G1[i,]+meanFramesGlobalCoordinate_G1[3,,i],origin = meanPositions_G1[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  # }
+  
+  # plot mean LP-ds-rep G2
+  #connections
+  for (j in 1:nrow(meanPositions_G2)) {
+    k1<-pointsIndices[j]
+    k2<-parentsIndices[j]
+    if(k2==k1){
+      next
+    }
+    vectors3d(meanPositions_G2[k1,],origin = meanPositions_G2[k2,],
+              headlength = 0.2,radius = 1/10, col="red", lwd=1)
+  }
+  #spokes
+  for (i in frameIndices) {
+    plot3d(rbind(meanPositions_G2[i,],meanUpSpokesTips_G2[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
+  }
+  for (i in frameIndices) {
+    plot3d(rbind(meanPositions_G2[i,],meanDownSpokesTips_G2[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
+  }
+  #spine
+  plot3d(meanPositions_G2[spineIndices,],type="l",lwd=4,col = "red",expand = 10,box=FALSE,add = TRUE)
+  # # frames
+  # for (i in frameIndices) {
+  #   
+  #   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[1,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  #   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[2,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  #   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[3,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
+  # }
+  decorate3d(xlab = "x", ylab = "y", zlab = "z",
+             box = F, axes = TRUE, main = "Mean shapes",
+             sub = NULL, top = T, aspect = FALSE, expand = 1.1)
+  
 }
-#spokes
-for (i in frameIndices) {
-  plot3d(rbind(meanPositions_G2[i,],meanUpSpokesTips_G2[i,]),type="l",col = "blue",expand = 10,box=FALSE,add = TRUE)
-}
-for (i in frameIndices) {
-  plot3d(rbind(meanPositions_G2[i,],meanDownSpokesTips_G2[i,]),type="l",col = "red",expand = 10,box=FALSE,add = TRUE)
-}
-#spine
-plot3d(meanPositions_G2[spineIndices,],type="l",lwd=4,col = "red",expand = 10,box=FALSE,add = TRUE)
-# # frames
-# for (i in frameIndices) {
-#   
-#   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[1,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-#   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[2,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-#   vectors3d(meanPositions_G2[i,]+meanFramesGlobalCoordinate_G2[3,,i],origin = meanPositions_G2[i,],headlength = 0.1,radius = 1/10, col="orange", lwd=1)
-# }
-decorate3d(xlab = "x", ylab = "y", zlab = "z",
-           box = F, axes = TRUE, main = "Mean shapes",
-           sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-
-
 
 #####################################################################################################
 #####################################################################################################
-# Hypothesis testing
+# LP-dss-rep Hypothesis testing
 
 # hypothesis test on LP size
 pValues_LP_sizes<-meanDifferenceTest1D(log(LP_sizes_G1),log(LP_sizes_G2),type = typeOfTest) 
@@ -2432,81 +2062,13 @@ boxplot(LP_sizes_G1, LP_sizes_G2, names = c("CG","PD"),main="LP-size")
 cat("Mean LP size G1:",mean(LP_sizes_G1),"mean LP size G2:",mean(LP_sizes_G2),"\n")
 cat("sd LP size G1:",sd(LP_sizes_G1),"sd LP size G2:",sd(LP_sizes_G2),"\n")
 
-
-# hipothesis thresholds
-thresholdDirections<-pi/50
-thresholdDirections
-thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
-thresholdLengths
-
-
-
-# #Volume comparision
-# volumeMesh_G1<-rep(0,nSamplesG1)
-# for (i in 1:nSamplesG1) {
-#   volumeMesh_G1[i]<-vcgVolume(allMeshes_G1[[i]])
-# }
-# volumeMesh_G2<-rep(0,nSamplesG2)
-# for (i in 1:nSamplesG2) {
-#   volumeMesh_G2[i]<-vcgVolume(allMeshes_G2[[i]])
-# }
-# 
-# # hypothesis test on mesh volume
-# pValues_meshVolume<-meanDifferenceTest1D(log(volumeMesh_G1),log(volumeMesh_G2),type = typeOfTest) 
-# cat("pValue of LP sizes is:",pValues_meshVolume,"\n")
-# boxplot(volumeMesh_G1, volumeMesh_G2, names = c("CG","PD"),main="Volume")
-# cat("Mean volume G1:",mean(volumeMesh_G1),"mean volume G2:",mean(volumeMesh_G2),"\n")
-# cat("sd volume G1:",sd(volumeMesh_G1),"sd volume G2:",sd(volumeMesh_G2),"\n")
-
-# # hypothesis test on sum of spokes' lengths i.e., thickness
-# spokesTotalLengths_G1<-rep(NA,nSamplesG1)
-# for (i in 1:nSamplesG1) {
-#   spokesTotalLengths_G1[i]<-sum(upSpokeLengthScaled_G1[frameIndices,i])+sum(downSpokeLengthScaled_G1[frameIndices,i])
-# }
-# spokesTotalLengths_G2<-rep(NA,nSamplesG2)
-# for (i in 1:nSamplesG2) {
-#   spokesTotalLengths_G2[i]<-sum(upSpokeLengthScaled_G2[frameIndices,i])+sum(downSpokeLengthScaled_G2[frameIndices,i])
-# }
-# boxplot(spokesTotalLengths_G1, spokesTotalLengths_G2, names = c("G1","G2"),main="LP size")
-# pValues_TtestTotalSpokesLengths<-meanDifferenceTest1D(log(spokesTotalLengths_G1),
-#                                                       log(spokesTotalLengths_G2),
-#                                                       type = typeOfTest)
-# pValues_TtestTotalSpokesLengths
-# 
-# 
-# 
-# # hypothesis test on spine lengths
-# spineLength_G1<-rep(NA,nSamplesG1)
-# for (i in 1:nSamplesG1) {
-#   spineLength_G1[i]<-sum(connectionsLengthsScaled_G1[spineIndices,i])
-# }
-# spineLength_G2<-rep(NA,nSamplesG2)
-# for (i in 1:nSamplesG2) {
-#   spineLength_G2[i]<-sum(connectionsLengthsScaled_G2[spineIndices,i])
-# }
-# boxplot(spineLength_G1,spineLength_G2, names = c("G1","G2"),main="Spine length")
-# pValues_TtestTotalSpinesLengths<-meanDifferenceTest1D(log(spineLength_G1),
-#                                                       log(spineLength_G2),
-#                                                       type = typeOfTest)
-# pValues_TtestTotalSpinesLengths
-# 
-
-
-# # hypothesis test on all connections' lengths i.e., skeletal surface area
-# skeletalAreaBasedOnConnectionLengths_G1<-rep(NA,nSamplesG1)
-# for (i in 1:nSamplesG1) {
-#   skeletalAreaBasedOnConnectionLengths_G1[i]<-sum(connectionsLengthsScaled_G1[-spineIndices,i])
-# }
-# skeletalAreaBasedOnConnectionLengths_G2<-rep(NA,nSamplesG2)
-# for (i in 1:nSamplesG2) {
-#   skeletalAreaBasedOnConnectionLengths_G2[i]<-sum(connectionsLengthsScaled_G2[-spineIndices,i])
-# }
-# boxplot(skeletalAreaBasedOnConnectionLengths_G1,skeletalAreaBasedOnConnectionLengths_G2, names = c("G1","G2"),main="Spine length")
-# pValues_TtestTotalSkeletalArea<-meanDifferenceTest1D(log(skeletalAreaBasedOnConnectionLengths_G1),
-#                                                      log(skeletalAreaBasedOnConnectionLengths_G2),
-#                                                      type = typeOfTest)
-# pValues_TtestTotalSkeletalArea
-
+# hypothesis thresholds to ignore extremely concentrated data
+if(TRUE){
+  thresholdDirections<-pi/50
+  thresholdDirections
+  thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
+  thresholdLengths  
+}
 
 # hypothesis test on spokes' lengths
 pValues_TtestUpSpokesLengths<-rep(NA,numberOfSkelPoints)
@@ -2622,9 +2184,9 @@ for(i in 1:numberOfSkelPoints){
   euclideanizedConnectionsBasedOnParentFramesG2[,,i]<-euclideanizedTemp$euclideanG2
   
 }
-plot(euclideanizedConnectionsBasedOnParentFramesG1[,,25],col='blue',xlim = c(-pi,pi),ylim =  c(-0.5,0.5))
-par(new=TRUE)
-plot(euclideanizedConnectionsBasedOnParentFramesG2[,,25],col='red',xlim = c(-0.5,0.5),ylim =  c(-0.5,0.5))
+# plot(euclideanizedConnectionsBasedOnParentFramesG1[,,25],col='blue',xlim = c(-pi,pi),ylim =  c(-0.5,0.5))
+# par(new=TRUE)
+# plot(euclideanizedConnectionsBasedOnParentFramesG2[,,25],col='red',xlim = c(-0.5,0.5),ylim =  c(-0.5,0.5))
 # which(pValConnectionsBasedOnParentFrames<=0.05)
 
 framesBasedOnParentsVectorized_G1<-array(NA,dim = c(numberOfSkelPoints,9,nSamplesG1))
@@ -2685,10 +2247,7 @@ for(i in frameIndices){
 # }
 # which(!is.na(pValFramesBasedOnParent) & pValFramesBasedOnParent<=0.05)
 
-#####################################################################################################
-#####################################################################################################
 # plot significant GOPs
-
 pvalues_LP_ds_rep <- c(pValues_TtestUpSpokesLengths,
                        pValues_TtestDownSpokesLengths,
                        pValues_TtestConnectionsLengths,    
@@ -2802,8 +2361,8 @@ if(TRUE){
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
   # pp <- par3d(no.readonly=TRUE)
   # dput(pp, file="plotView.R", control = "all")
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -2822,8 +2381,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' lengths after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   
   # spokes directions 
@@ -2837,8 +2396,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' directions",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   # with correction 
   open3d()
@@ -2851,8 +2410,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant spokes' directions after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #2 connections lengths
   open3d()
@@ -2878,8 +2437,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' lengths",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -2905,8 +2464,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' lengths after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #3 connections directions
   open3d()
@@ -2932,8 +2491,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' directions",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -2959,8 +2518,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant connections' directions after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #5 frames
   open3d()
@@ -2976,8 +2535,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant frames",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
   #with correction
   open3d()
@@ -2993,8 +2552,8 @@ if(TRUE){
              box = F, axes = TRUE,
              # main = "Significant frames after BH adjustment",
              sub = NULL, top = T, aspect = FALSE, expand = 1.1)
-  pp <- dget("plotView.R")
-  par3d(userMatrix=pp$userMatrix)
+  # pp <- dget("plotView.R")
+  # par3d(userMatrix=pp$userMatrix)
   
 }
 
