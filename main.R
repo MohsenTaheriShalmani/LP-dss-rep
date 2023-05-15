@@ -43,7 +43,7 @@ if(TRUE){
   source("subFunctions/normalsOfSkeletalSheetByConnections.R")
   source("subFunctions/rotateFrameForwardAndBackward.R")
   source("subFunctions/meanFrames.R")
-  source("fit_LP_dss_rep.R")
+  source("subFunctions/fit_LP_dss_rep.R")
 }
 
 #####################################################################################################

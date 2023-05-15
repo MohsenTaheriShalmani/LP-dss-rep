@@ -1,4 +1,9 @@
-# LP-dss-rep
+There are two R.scripts as "main.R" and "hypothesisTest_Ellipsoids_vs_deformedEllipsoids.R"
+
+
+************************************************************************
+*************************** main.R discription *************************
+************************************************************************
 Fitting Locally Parameterized Swept Skeletal Structure (LP-dss-rep) to slabular objects
 
 fit_LP_dss_rep function is in the main.R script
@@ -23,6 +28,13 @@ numberOfSpanialPoints          integer              Number of spinal points
 cross_sections_visualization   TRUE/FALSE           For visualizing the cross-sections
 
 
+************************************************************************
+********** hypothesisTest_Ellipsoids_vs_deformedEllipsoids.R ***********
+************************************************************************
+LP-ds-rep hypothesis testing versus LP-dss-rep hypothesis testing to detect local dissimilariteis 
+between a group of ellipsoids versus a group of inflated ellipsoids 
+
+Please run the R script line by line
 	
 	
 	

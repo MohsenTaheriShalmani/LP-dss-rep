@@ -115,6 +115,10 @@ boundaryPlusSkeletal_Ellipsoid<-tempEllipsoid$boundaryPlusSkeletal
 
 # plot ds-rep
 if(TRUE){
+  open3d()
+  wire3d(tmesh, col="grey",alpha=0.2)  #wire mesh
+  shade3d(tmesh, col="white",alpha=0.2)  #surface mech 
+  
   sampleNo<-1
   plot3d(SkeletalPDMEllipsoid[skelRange,,sampleNo],type="s", radius = 0.4,col = "black",expand = 10,box=FALSE,add = TRUE)
   plot3d(BoundaryPDMEllipsoid[,,sampleNo],type="s", radius = 0.4,col = "black",expand = 10,box=FALSE,add = TRUE)
@@ -224,9 +228,6 @@ for (k in 1:nSamplesG2) {
   }
 }
 
-#####################################################################################################
-#####################################################################################################
-# Plot a ds-rep and its mesh from group1
 
 #plot an inflated ellipsoid with its ds-rep
 sampleNo<-10 #choose sampleNo between 1 to nSamplesG2 to see other ds-reps
@@ -626,11 +627,7 @@ if(typeOfStudy=="sizeAndShapeAnalysis"){
   
 }
 
-#####################################################################################################
-#####################################################################################################
 # Calculate mean LP-ds-rep based on Taheri & schulz 2022 article
-
-#calculate mean frames in local and global coordinate systems
 if(TRUE){
   
   framesBasedOnParentsVectorized_G1<-array(NA,dim = c(numberOfFrames,9,nSamplesG1))
@@ -908,8 +905,6 @@ if(TRUE){
              top = TRUE, aspect = FALSE, expand = 1.1)
 }
 
-#####################################################################################################
-#####################################################################################################
 # Hypothesis testing
 
 # hypothesis test on LP size
@@ -923,9 +918,7 @@ cat("Mean LP size G1:",mean(LP_sizes_G1),"mean LP size G2:",mean(LP_sizes_G2),"\
 # hypothesis thresholds to ignore extremely concentrated data
 if(TRUE){
   thresholdDirections<-pi/200
-  thresholdDirections
   thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
-  thresholdLengths  
 }
 
 
@@ -1384,9 +1377,7 @@ framesCenters<-LP_ds_rep_inflationSimulation_G1[[1]]$framesCenters
 parentsIndices<-LP_ds_rep_inflationSimulation_G1[[1]]$parentsIndices
 parentsIndices<-LP_ds_rep_inflationSimulation_G1[[1]]$parentsIndices
 pointsIndices<-LP_ds_rep_inflationSimulation_G1[[1]]$pointsIndices
-
 frameIndices<-which(!is.na(framesCenters))
-
 numberOfSkelPoints<-length(pointsIndices)
 
 
@@ -2065,9 +2056,7 @@ cat("sd LP size G1:",sd(LP_sizes_G1),"sd LP size G2:",sd(LP_sizes_G2),"\n")
 # hypothesis thresholds to ignore extremely concentrated data
 if(TRUE){
   thresholdDirections<-pi/50
-  thresholdDirections
   thresholdLengths<-mean(c(LP_sizes_G1,LP_sizes_G2))/200
-  thresholdLengths  
 }
 
 # hypothesis test on spokes' lengths
