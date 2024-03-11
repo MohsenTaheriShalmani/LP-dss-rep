@@ -3,6 +3,7 @@ This repository is associated with the bellow publication.
 Mohsen Taheri, Stephen M. Pizer, Jörn Schulz et al. Fitting the Discrete Swept Skeletal Representation to Slabular Objects, 18 May 2023, PREPRINT (Version 1) available at Research Square [https://doi.org/10.21203/rs.3.rs-2927062/v1]
 
 Cite:
+
 @article{taheri2023fitting,
   title={Fitting the Discrete Swept Skeletal Representation to Slabular Objects},
   author={Taheri, Mohsen and Pizer, Stephen M and Schulz, J{\"o}rn},
