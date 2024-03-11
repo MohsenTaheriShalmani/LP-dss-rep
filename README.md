@@ -45,7 +45,6 @@ LP-ds-rep hypothesis testing versus LP-dss-rep hypothesis testing to detect loca
 between a group of ellipsoids versus a group of inflated ellipsoids 
 
 Please run the R script line by line
-	
 
-	![sweptSkeletalStructure](https://github.com/MohsenTaheriShalmani/LP-dss-rep/assets/19237855/181c8156-a2ea-4c51-bd34-484e244e073a)
+
 
