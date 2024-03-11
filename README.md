@@ -48,7 +48,7 @@ between a group of ellipsoids versus a group of inflated ellipsoids
 Please run the R script line by line
 
 
-![sweptSkeletalStructure](https://github.com/MohsenTaheriShalmani/LP-dss-rep/assets/19237855/634fc52b-25e0-48cb-88ac-41638c61b2aa)
+![sweptSkeletalStructure](https://github.com/MohsenTaheriShalmani/LP-dss-rep/assets/19237855/4882edbf-8245-4994-9de4-d38b7daecb76)
 
 
 
