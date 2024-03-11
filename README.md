@@ -1,9 +1,20 @@
+This repository is associated with the bellow publication.
+
+Mohsen Taheri, Stephen M. Pizer, Jörn Schulz et al. Fitting the Discrete Swept Skeletal Representation to Slabular Objects, 18 May 2023, PREPRINT (Version 1) available at Research Square [https://doi.org/10.21203/rs.3.rs-2927062/v1]
+
+Cite:
+
+@article{taheri2023fitting,
+  title={Fitting the Discrete Swept Skeletal Representation to Slabular Objects},
+  author={Taheri, Mohsen and Pizer, Stephen M and Schulz, J{\"o}rn},
+  year={2023}
+}
+
+************************************************************************
+*************************** main.R description *************************
+************************************************************************
 There are two R.scripts as "main.R" and "hypothesisTest_Ellipsoids_vs_deformedEllipsoids.R"
 
-
-************************************************************************
-*************************** main.R discription *************************
-************************************************************************
 Fitting Locally Parameterized Swept Skeletal Structure (LP-dss-rep) to slabular objects
 
 fit_LP_dss_rep function is in the main.R script
@@ -31,12 +42,13 @@ cross_sections_visualization   TRUE/FALSE           For visualizing the cross-se
 ************************************************************************
 ********** hypothesisTest_Ellipsoids_vs_deformedEllipsoids.R ***********
 ************************************************************************
-LP-ds-rep hypothesis testing versus LP-dss-rep hypothesis testing to detect local dissimilariteis 
+LP-ds-rep hypothesis testing versus LP-dss-rep hypothesis testing to detect local dissimilarities 
 between a group of ellipsoids versus a group of inflated ellipsoids 
 
 Please run the R script line by line
-	
-	
-	
-	
-	
+
+
+![sweptSkeletalStructure](https://github.com/MohsenTaheriShalmani/LP-dss-rep/assets/19237855/634fc52b-25e0-48cb-88ac-41638c61b2aa)
+
+
+
